@@ -38,7 +38,7 @@ y parar de invertir en los que no pagan. Disciplina intelectual sobre P&L de van
  │  cripto    │      │  markets   │ │  context │      │  RIESGO       │    │  + alerting   │
  │ (spot/fut) │      │ (copy-trade│ │ (radar)  │      │               │    │               │
  └─────┬──────┘      │  wallets)  │ └──────────┘      │ circuit break.│    │ dashboard RT  │
-       │             └─────┬──────┘                   │ forward-guard │    │ 15 watchers   │
+       │             └─────┬──────┘                   │ forward-guard │    │ 31 watchers   │
        │                   │                          │ (auto-retiro) │    │ → Telegram    │
        │                   │                          │ sizing/gates  │    │ auto-auditor  │
        ▼                   ▼                          │ daily CB      │    │ ledgers SQL   │
@@ -87,6 +87,25 @@ y parar de invertir en los que no pagan. Disciplina intelectual sobre P&L de van
   reconciliación on-chain reveló que "aún sin configurar" (esperado) compartía path de alerta con
   "RPC roto" (fallo real) → 4 pings/día de ruido. Arreglado el mismo día. *Simular el estado actual
   del sistema contra el script antes de programarlo.*
+- **Code review multiagente adversarial** — monté un harness de revisión con 23 agentes (4 lentes
+  independientes + verificadores escépticos que deben *fracasar unánimemente en refutar* un hallazgo
+  antes de reportarlo) sobre un lote de cambios ya verificado a mano: 16 hallazgos crudos → 9 reales
+  confirmados (6 falsos positivos filtrados antes de llegar a un humano). Entre los confirmados: un
+  patrón de deploy cuyo `git stash pop` incondicional podía regresionar datos de producción en
+  silencio, y un panel de salud incapaz de reportar "muerto" porque `pgrep -f` se encontraba a su
+  propio wrapper de shell. *La redundancia encuentra bugs; la verificación adversarial los mantiene
+  honestos.*
+- **Los health-probes deben medir éxito, no actividad** — el probe del builder del dashboard usaba
+  el mtime de su log; como el cron volcaba stderr al mismo log, un builder crasheando en bucle
+  refrescaba su propio heartbeat cada minuto y seguía "healthy" con la salida congelada. Probe movido
+  al artefacto construido, que solo se actualiza en éxito. *Un componente que puede escribir su
+  propio heartbeat mientras falla, lo hará.*
+- **Los contrafactuales mienten si no son ejecutables** — el audit nocturno de "señales perdidas"
+  puntuaba los rechazos con fills en la mecha intradía, coste cero y estrategias retiradas incluidas:
+  una cota superior estructural que se leía como arrepentimiento. Reconstruí los defaults con fills
+  ejecutables (cierre de vela), costes medidos y solo estrategias vivas — el número honesto *siguió*
+  dando la razón a los gates (0% de aciertos en los rechazos recientes), pero ahora es un número
+  accionable. *Un contrafactual optimista es una invitación permanente a aflojar el gate equivocado.*
 
 <!-- screenshot pendiente: panel de research / registro de estrategias — opcional -->
 

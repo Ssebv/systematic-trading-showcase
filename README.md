@@ -38,7 +38,7 @@ that don't pay. Intellectual discipline over vanity P&L.
  │ strategies │      │  markets   │ │  context │      │               │    │  + alerting   │
  │ (spot/fut) │      │ (wallet    │ │ (radar)  │      │ circuit break.│    │ real-time     │
  └─────┬──────┘      │ copy-trade)│ └──────────┘      │ forward-guard │    │  dashboard    │
-       │             └─────┬──────┘                   │ (auto-retire) │    │ 15 watchers   │
+       │             └─────┬──────┘                   │ (auto-retire) │    │ 31 watchers   │
        │                   │                          │ sizing/gates  │    │ → Telegram    │
        │                   │                          │ daily CB      │    │ auto-auditor  │
        ▼                   ▼                          └───────┬───────┘    └──────┬────────┘
@@ -87,6 +87,24 @@ that don't pay. Intellectual discipline over vanity P&L.
   firing revealed that "not configured yet" (expected state) fell into the same alert path as "RPC
   broken" (real failure) → 4 noise pings/day. Fixed same day: silent on the expected state, loud on
   the real one. *Simulate the system's current state against the script before scheduling it.*
+- **Adversarial multi-agent code review** — ran a 23-agent review harness (4 independent review
+  lenses + skeptic verifiers that must *unanimously fail to refute* a finding before it's reported)
+  over an already hand-verified change batch: 16 raw findings → 9 confirmed real (6 false positives
+  filtered before reaching a human). Among the confirmed: a deploy pattern whose unconditional
+  `git stash pop` could silently regress production data files, and a health panel that could never
+  report "dead" because `pgrep -f` matched its own shell wrapper. *Redundancy finds bugs; adversarial
+  verification keeps them honest.*
+- **Health probes must measure success, not activity** — the dashboard builder's liveness probe used
+  its log's mtime; since cron piped stderr to the same log, a crash-looping builder refreshed its own
+  heartbeat every minute and stayed "healthy" while the output froze. Moved the probe to the built
+  artifact, which only updates on success. *A component that can write its own heartbeat while
+  failing will.*
+- **Counterfactuals lie unless you make them executable** — the nightly "missed wins" audit scored
+  blocked signals with intrabar-wick fills, zero costs, and retired strategies included: a structural
+  upper bound that read as regret. Rebuilt the defaults around executable fills (bar-close triggers),
+  measured round-trip costs, and live strategies only — the honest number *still* vindicated the risk
+  gates (0% win rate on recent rejections), but now it's a number you can act on. *An optimistic
+  counterfactual is a standing invitation to loosen the wrong gate.*
 
 <!-- screenshot pendiente: research / strategy registry panel — optional -->
 
