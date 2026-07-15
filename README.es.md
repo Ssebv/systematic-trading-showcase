@@ -111,6 +111,17 @@ y parar de invertir en los que no pagan. Disciplina intelectual sobre P&L de van
 
 ---
 
+## Casos de estudio
+
+- **[Rotación Dual-Momentum sobre ETFs — un screen honesto](case-studies/etf-dual-momentum.md)** —
+  evalué de punta a punta una estrategia de ETFs con vistas a convertirla en producto:
+  reduce a la mitad la peor caída (−25% vs −51%, +8% en 2008) pero su Sharpe no le gana a
+  un 60/40 trivial, así que la reporto como protección ante cracks, no como alpha — y paro
+  antes de forzar por overfit una variante que "gane". *El número honesto, con sus defectos
+  a la vista, es el entregable.*
+
+---
+
 ## Stack
 
 `Python` · `Docker (multi-stage, hardened)` · `supervisord` · `Linux/VPS` · `Tailscale` ·

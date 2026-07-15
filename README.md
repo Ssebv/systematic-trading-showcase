@@ -110,6 +110,16 @@ that don't pay. Intellectual discipline over vanity P&L.
 
 ---
 
+## Case studies
+
+- **[Dual-Momentum ETF rotation — an honest screen](case-studies/etf-dual-momentum.md)** —
+  screened a productizable ETF strategy end to end: it halves the worst drawdown (−25% vs
+  −51%, +8% in 2008) but its Sharpe doesn't beat a trivial 60/40, so I report it as crash
+  protection, not alpha — and stop before p-hacking a variant that "wins." *The honest
+  number, warts shown, is the deliverable.*
+
+---
+
 ## Stack
 
 `Python` · `Docker (multi-stage, hardened)` · `supervisord` · `Linux/VPS` · `Tailscale` ·
